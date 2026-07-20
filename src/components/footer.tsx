@@ -4,22 +4,23 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
+import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/site";
 
 const menuItems = [
   {
     title: "Company",
     links: [
-      { text: "Services", url: "#services" },
-      { text: "About", url: "#about" },
+      { text: "How it works", url: "#how-it-works" },
+      { text: "The Workforce", url: "#workforce" },
       { text: "Pricing", url: "#pricing" },
-      { text: "Contact", url: "#contact" },
+      { text: "About", url: "#about" },
     ],
   },
   {
-    title: "Resources",
+    title: "Get started",
     links: [
-      { text: "How It Works", url: "#services" },
-      { text: "Book a Call", url: "#contact" },
+      { text: "Book a demo", url: CALENDLY_URL, external: true },
+      { text: "Email us", url: `mailto:${CONTACT_EMAIL}` },
     ],
   },
   {
@@ -43,27 +44,33 @@ export function Footer() {
           <Grid size={{ xs: 12, lg: 4 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Box
+                aria-hidden
                 sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 1.5,
-                  background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                  width: 30,
+                  height: 30,
+                  borderRadius: "8px",
+                  bgcolor: "secondary.main",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
                 <Typography
-                  variant="body2"
-                  fontWeight={700}
-                  sx={{ color: "#ffffff" }}
+                  component="span"
+                  sx={{
+                    fontFamily: "var(--font-mono), ui-monospace, monospace",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    color: "primary.main",
+                    lineHeight: 1,
+                  }}
                 >
                   O
                 </Typography>
               </Box>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6" fontWeight={700} letterSpacing="-0.02em">
                 Outbound
-                <Box component="span" sx={{ color: "text.secondary" }}>
+                <Box component="span" sx={{ color: "primary.main" }}>
                   OS
                 </Box>
               </Typography>
@@ -71,17 +78,18 @@ export function Footer() {
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ mt: 2, maxWidth: 280, lineHeight: 1.7 }}
+              sx={{ mt: 2, maxWidth: 300, lineHeight: 1.7 }}
             >
-              Revenue systems for service businesses. We automate your lead
-              capture and follow-up so every inquiry gets an instant response.
+              The managed AI workforce for home-service businesses. Every call
+              answered, every lead followed up, every job on the books — 24/7,
+              on your business&apos;s real context.
             </Typography>
           </Grid>
 
           {/* Link columns */}
           {menuItems.map((section) => (
             <Grid key={section.title} size={{ xs: 6, sm: 4, lg: "auto" }}>
-              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>
                 {section.title}
               </Typography>
               <Stack spacing={1.5}>
@@ -92,6 +100,9 @@ export function Footer() {
                     underline="none"
                     color="text.secondary"
                     variant="body2"
+                    {...("external" in link && link.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
                     sx={{ "&:hover": { color: "text.primary" } }}
                   >
                     {link.text}

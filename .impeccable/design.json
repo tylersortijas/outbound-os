@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-19T00:00:00Z",
+  "title": "Design System: OutboundOS",
+  "extensions": {
+    "colorMeta": {
+      "safety-amber": {
+        "role": "primary",
+        "displayName": "Safety Amber",
+        "canonical": "oklch(68% 0.16 55)",
+        "tonalRamp": ["oklch(24% 0.09 55)", "oklch(34% 0.12 55)", "oklch(44% 0.15 55)", "oklch(54% 0.16 55)", "oklch(68% 0.16 55)", "oklch(78% 0.13 60)", "oklch(88% 0.08 62)", "oklch(96% 0.03 64)"]
+      },
+      "graphite-ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "oklch(22% 0.01 265)",
+        "tonalRamp": ["oklch(14% 0.01 265)", "oklch(22% 0.01 265)", "oklch(32% 0.01 265)", "oklch(44% 0.01 265)", "oklch(56% 0.01 265)", "oklch(70% 0.008 265)", "oklch(88% 0.005 265)", "oklch(97% 0.003 265)"]
+      },
+      "steel": {
+        "role": "neutral",
+        "displayName": "Steel",
+        "canonical": "oklch(48% 0.015 265)",
+        "tonalRamp": ["oklch(20% 0.015 265)", "oklch(30% 0.015 265)", "oklch(40% 0.015 265)", "oklch(48% 0.015 265)", "oklch(60% 0.012 265)", "oklch(72% 0.01 265)", "oklch(86% 0.008 265)", "oklch(96% 0.004 265)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and section-opening statements. One amber word max." },
+      "body": { "displayName": "Body", "purpose": "All prose. Archivo 400, max 68ch." },
+      "label": { "displayName": "Log Label", "purpose": "Machine-record content only — status, timestamps, Business Brain fields, LOGGED · REVERSIBLE tags." }
+    },
+    "shadows": [
+      { "name": "hover-lift", "value": "0 6px 24px rgba(22,24,29,0.10)", "purpose": "Interactive cards/panels on hover only, with ~2px translateY." },
+      { "name": "float", "value": "0 12px 40px rgba(15,17,21,0.18)", "purpose": "Elements that truly float: dropdowns, mobile menu, scrolled sticky nav." }
+    ],
+    "motion": [
+      { "name": "ease-out-quint", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default easing for state and entrance transitions. No bounce." },
+      { "name": "dur-fast", "value": "160ms", "purpose": "Button/hover state changes." },
+      { "name": "dur-reveal", "value": "600ms", "purpose": "Section entrance reveals." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "900px" },
+      { "name": "lg", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Accent Button (Book a demo)",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "The single high-visibility CTA. Amber fill, dark ink text.",
+      "html": "<button class=\"ds-btn-accent\">Book a demo</button>",
+      "css": ".ds-btn-accent { background: #E8701E; color: #16181D; font-family: Archivo, system-ui, sans-serif; font-weight: 600; font-size: 1rem; padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; transition: background 160ms cubic-bezier(0.22,1,0.36,1), transform 160ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-accent:hover { background: #C85A12; transform: translateY(-1px); } .ds-btn-accent:focus-visible { outline: 2px solid #E8701E; outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Secondary actions. Graphite ink fill, paper text.",
+      "html": "<button class=\"ds-btn-primary\">See how it works</button>",
+      "css": ".ds-btn-primary { background: #16181D; color: #FFFFFF; font-family: Archivo, system-ui, sans-serif; font-weight: 600; font-size: 1rem; padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; transition: background 160ms cubic-bezier(0.22,1,0.36,1), transform 160ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-primary:hover { background: #20242C; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid #E8701E; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Tertiary actions. Paper fill, hairline border.",
+      "html": "<button class=\"ds-btn-ghost\">Learn more</button>",
+      "css": ".ds-btn-ghost { background: #FFFFFF; color: #16181D; font-family: Archivo, system-ui, sans-serif; font-weight: 600; font-size: 1rem; padding: 14px 28px; border: 1px solid #E4E7EA; border-radius: 8px; cursor: pointer; transition: border-color 160ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-ghost:hover { border-color: #16181D; } .ds-btn-ghost:focus-visible { outline: 2px solid #E8701E; outline-offset: 2px; }"
+    },
+    {
+      "name": "Log Label / Record Chip",
+      "kind": "chip",
+      "refersTo": "log-label",
+      "description": "Machine-record label — status, Business Brain field, logged/reversible tag. Mono only.",
+      "html": "<span class=\"ds-log-label\">LOGGED · REVERSIBLE</span>",
+      "css": ".ds-log-label { display: inline-flex; align-items: center; gap: 6px; background: #F5F6F8; color: #565D69; font-family: 'Spline Sans Mono', ui-monospace, monospace; font-weight: 500; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; border: 1px solid #E4E7EA; }"
+    },
+    {
+      "name": "Worker Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "AI-employee roster item: name, job line, status chip, Business Brain fields.",
+      "html": "<article class=\"ds-worker-card\"><div class=\"ds-worker-head\"><h3>AI Receptionist</h3><span class=\"ds-status\">ON</span></div><p>Answers every call and books the job — 24/7, in your company's voice.</p><div class=\"ds-fields\"><span class=\"ds-field\">SERVICE AREA · 12 ZIPs</span><span class=\"ds-field\">AFTER-HOURS · ROUTE TO ON-CALL</span></div></article>",
+      "css": ".ds-worker-card { background: #FFFFFF; border: 1px solid #E4E7EA; border-radius: 12px; padding: 24px; transition: box-shadow 160ms cubic-bezier(0.22,1,0.36,1), transform 160ms cubic-bezier(0.22,1,0.36,1); } .ds-worker-card:hover { box-shadow: 0 6px 24px rgba(22,24,29,0.10); transform: translateY(-2px); } .ds-worker-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .ds-worker-card h3 { font-family: Archivo, system-ui, sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.01em; color: #16181D; margin: 0; } .ds-status { font-family: 'Spline Sans Mono', ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.08em; color: #A8480C; border: 1px solid #E8701E; border-radius: 4px; padding: 2px 6px; } .ds-worker-card p { font-family: Archivo, system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.7; color: #565D69; margin: 12px 0 16px; } .ds-fields { display: flex; flex-wrap: wrap; gap: 8px; } .ds-field { font-family: 'Spline Sans Mono', ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.04em; color: #565D69; background: #F5F6F8; border: 1px solid #E4E7EA; border-radius: 4px; padding: 4px 8px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field. Hairline border, amber focus ring — no blurry glow.",
+      "html": "<label class=\"ds-field-label\">Business name<input class=\"ds-input\" type=\"text\" placeholder=\"Arctic Air Heating & Cooling\" /></label>",
+      "css": ".ds-field-label { display: flex; flex-direction: column; gap: 6px; font-family: Archivo, system-ui, sans-serif; font-weight: 600; font-size: 0.9rem; color: #16181D; } .ds-input { font-family: Archivo, system-ui, sans-serif; font-size: 1rem; color: #16181D; background: #FFFFFF; border: 1px solid #E4E7EA; border-radius: 8px; padding: 12px 14px; transition: border-color 160ms cubic-bezier(0.22,1,0.36,1); } .ds-input::placeholder { color: #565D69; } .ds-input:focus-visible { outline: none; border-color: #E8701E; box-shadow: 0 0 0 2px rgba(232,112,30,0.35); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Service Manual",
+    "overview": "OutboundOS looks like the documentation bolted to a piece of professional equipment — precise, legible, built to be trusted by someone with grease on their hands. It is engineered software that speaks the trades' language: the sharpness of a modern dev tool crossed with the grounded, high-visibility utility of the shop floor. The spine is shown-not-claimed trust: where a generic SaaS site prints a promise, OutboundOS prints the record — the Business Brain field it read, the decision it made, the note that it's logged and reversible.",
+    "keyCharacteristics": [
+      "Graphite-and-amber palette; no blue-SaaS default, no warm-cream default.",
+      "One industrial grotesque (Archivo) in committed weight contrast, plus a mono (Spline Sans Mono) reserved strictly for machine-record labels.",
+      "Flat by default; depth from tonal layering and hairline borders, not decorative shadow.",
+      "Trust rendered as visible record: logged/reversible tags, Business Brain fields, status.",
+      "High-visibility accent used as signal, never as excitement."
+    ],
+    "rules": [
+      { "name": "The Hi-Vis Rule", "body": "Safety Amber covers <=10% of any screen. Its rarity is the signal.", "section": "colors" },
+      { "name": "The No-Blue Rule", "body": "No blue anywhere in the palette. Graphite carries the engineered/software weight instead.", "section": "colors" },
+      { "name": "The Log Label Rule", "body": "Spline Sans Mono is used only for machine-record content. Mono outside the record is costume and is forbidden.", "section": "typography" },
+      { "name": "The One-Emphasis Rule", "body": "A headline gets at most one amber word. Emphasis by weight or the single accent, never underline, italic, or a second color.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. A shadow at rest is a bug; a shadow on hover/focus/float is the system working.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do carry the trust spine visually: pair every claim with a Record-motif field or a LOGGED · REVERSIBLE tag.",
+      "Do keep Safety Amber under ~10% of any screen (The Hi-Vis Rule).",
+      "Do use dark Graphite Ink text on amber fills; verify >=4.5:1 on all body text and placeholders.",
+      "Do convey depth with tonal layering and 1px hairlines; keep surfaces flat at rest.",
+      "Do vary section entrance motion to fit what it reveals; ship a prefers-reduced-motion fallback for every animation.",
+      "Do use real trades imagery (technicians, trucks, shop floors) shot like documentation, not stock-smiley marketing."
+    ],
+    "donts": [
+      "Don't reintroduce blue as a brand or accent color — that is the generic-blue-SaaS template we are escaping (The No-Blue Rule).",
+      "Don't use gradient text or gradient button fills — hype-y-agency tells, and an Impeccable absolute ban.",
+      "Don't ship the uniform fade-up-on-every-section reflex; that reads as AI scaffolding.",
+      "Don't use a tiny uppercase tracked eyebrow above every section; the mono label is a deliberate record system, not per-section decoration.",
+      "Don't use monospace for anything but machine-record content (The Log Label Rule).",
+      "Don't add robot mascots, speech bubbles, or toy-like AI motifs, or the busy GoHighLevel-clone dashboard look.",
+      "Don't nest cards, or let a resting shadow stand in for a hairline border."
+    ]
+  }
+}

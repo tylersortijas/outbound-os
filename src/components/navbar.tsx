@@ -18,15 +18,56 @@ import CloseIcon from "@mui/icons-material/Close";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useColorMode } from "@/components/ThemeRegistry";
+import { NAV_LINKS, SECTION_IDS, CALENDLY_URL } from "@/lib/site";
 
-const sectionIds = ["services", "about", "testimonials", "pricing", "contact"];
-
-const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Contact", href: "#contact" },
-];
+function Wordmark() {
+  return (
+    <Box
+      component="a"
+      href="#top"
+      aria-label="OutboundOS home"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        textDecoration: "none",
+        color: "text.primary",
+      }}
+    >
+      <Box
+        aria-hidden
+        sx={{
+          width: 30,
+          height: 30,
+          borderRadius: "8px",
+          bgcolor: "secondary.main",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          component="span"
+          sx={{
+            fontFamily: "var(--font-mono), ui-monospace, monospace",
+            fontWeight: 600,
+            fontSize: "1rem",
+            color: "primary.main",
+            lineHeight: 1,
+          }}
+        >
+          O
+        </Typography>
+      </Box>
+      <Typography variant="h6" fontWeight={700} letterSpacing="-0.02em">
+        Outbound
+        <Box component="span" sx={{ color: "primary.main" }}>
+          OS
+        </Box>
+      </Typography>
+    </Box>
+  );
+}
 
 export function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -51,7 +92,7 @@ export function Navbar() {
       },
       { rootMargin: "-40% 0px -55% 0px" }
     );
-    for (const id of sectionIds) {
+    for (const id of SECTION_IDS) {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     }
@@ -61,60 +102,24 @@ export function Navbar() {
   return (
     <AppBar
       position="sticky"
-      elevation={scrolled ? 1 : 0}
+      elevation={0}
       sx={{
         bgcolor: scrolled
           ? (theme) =>
               theme.palette.mode === "dark"
-                ? "rgba(11,17,32,0.9)"
+                ? "rgba(15,17,21,0.9)"
                 : "rgba(255,255,255,0.9)"
           : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid" : "none",
-        borderColor: "divider",
-        transition: "all 0.3s ease",
+        borderBottom: scrolled ? "1px solid" : "1px solid transparent",
+        borderColor: scrolled ? "divider" : "transparent",
+        boxShadow: scrolled ? "0 1px 0 rgba(0,0,0,0.02)" : "none",
+        transition: "background-color 0.3s ease, border-color 0.3s ease",
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ height: 64 }}>
-          {/* Logo */}
-          <Box
-            component="a"
-            href="#"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              textDecoration: "none",
-              color: "text.primary",
-            }}
-          >
-            <Box
-              sx={{
-                width: 32,
-                height: 32,
-                borderRadius: 1.5,
-                background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography
-                variant="body2"
-                fontWeight={700}
-                sx={{ color: "#ffffff" }}
-              >
-                O
-              </Typography>
-            </Box>
-            <Typography variant="h6" fontWeight={700} letterSpacing="-0.01em">
-              Outbound
-              <Box component="span" sx={{ color: "text.secondary" }}>
-                OS
-              </Box>
-            </Typography>
-          </Box>
+        <Toolbar disableGutters sx={{ height: 68 }}>
+          <Wordmark />
 
           <Box sx={{ flex: 1 }} />
 
@@ -124,31 +129,40 @@ export function Navbar() {
             spacing={1}
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
-            {navLinks.map((link) => {
+            {NAV_LINKS.map((link) => {
               const isActive = `#${activeSection}` === link.href;
               return (
                 <Button
                   key={link.href}
                   href={link.href}
                   sx={{
-                    color: isActive ? "primary.main" : "text.secondary",
-                    fontWeight: isActive ? 700 : 600,
+                    color: isActive ? "text.primary" : "text.secondary",
+                    fontWeight: 600,
                     "&:hover": { color: "text.primary", bgcolor: "action.hover" },
-                    transition: "color 0.2s ease, font-weight 0.2s ease",
+                    transition: "color 0.2s ease",
                   }}
                 >
                   {link.label}
                 </Button>
               );
             })}
-            <Button variant="contained" href="#contact" sx={{ ml: 1 }}>
-              Get Started
+            <Button
+              variant="contained"
+              color="primary"
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ ml: 1 }}
+            >
+              Book a demo
             </Button>
             <IconButton
               onClick={toggleColorMode}
               size="small"
               sx={{ color: "text.secondary" }}
-              aria-label="Toggle dark mode"
+              aria-label={
+                mode === "dark" ? "Switch to light mode" : "Switch to dark mode"
+              }
             >
               {mode === "dark" ? (
                 <LightModeIcon fontSize="small" />
@@ -164,7 +178,9 @@ export function Navbar() {
               onClick={toggleColorMode}
               size="small"
               sx={{ color: "text.secondary" }}
-              aria-label="Toggle dark mode"
+              aria-label={
+                mode === "dark" ? "Switch to light mode" : "Switch to dark mode"
+              }
             >
               {mode === "dark" ? (
                 <LightModeIcon fontSize="small" />
@@ -188,18 +204,17 @@ export function Navbar() {
           >
             <Box sx={{ p: 2 }}>
               <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  mb: 1,
-                }}
+                sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}
               >
-                <IconButton onClick={() => setDrawerOpen(false)}>
+                <IconButton
+                  onClick={() => setDrawerOpen(false)}
+                  aria-label="Close menu"
+                >
                   <CloseIcon />
                 </IconButton>
               </Box>
               <List>
-                {navLinks.map((link) => (
+                {NAV_LINKS.map((link) => (
                   <ListItemButton
                     key={link.href}
                     component="a"
@@ -209,7 +224,7 @@ export function Navbar() {
                     <ListItemText
                       primary={link.label}
                       primaryTypographyProps={{
-                        fontWeight: 500,
+                        fontWeight: 600,
                         fontSize: "1.1rem",
                       }}
                     />
@@ -219,11 +234,14 @@ export function Navbar() {
               <Stack spacing={1.5} sx={{ mt: 2, px: 2 }}>
                 <Button
                   variant="contained"
+                  color="primary"
                   fullWidth
-                  href="#contact"
+                  href={CALENDLY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setDrawerOpen(false)}
                 >
-                  Get Started
+                  Book a demo
                 </Button>
               </Stack>
             </Box>

@@ -1,18 +1,18 @@
 import { Hero } from "@/components/sections/hero";
-import { Services } from "@/components/sections/services";
-import { About } from "@/components/sections/about";
-import { Testimonials } from "@/components/sections/testimonials";
+import { BusinessBrain } from "@/components/sections/business-brain";
+import { Workforce } from "@/components/sections/workforce";
 import { Pricing } from "@/components/sections/pricing";
+import { About } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <Services />
-      <About />
-      <Testimonials />
+      <BusinessBrain />
+      <Workforce />
       <Pricing />
+      <About />
       <Contact />
     </>
   );

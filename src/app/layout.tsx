@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Spline_Sans_Mono } from "next/font/google";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { ThemeRegistry } from "@/components/ThemeRegistry";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Archivo: industrial grotesque, one family in weight contrast (display → body).
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Spline Sans Mono: machine-record labels only (status, Business Brain fields).
+const splineSansMono = Spline_Sans_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "OutboundOS — Revenue Systems for Service Businesses",
+  title: "OutboundOS — The AI Workforce for Home-Service Businesses",
   description:
-    "We install automated lead capture and follow-up systems that respond to every inquiry instantly. Stop losing leads to missed calls and slow follow-up.",
+    "Hire a managed team of AI employees that answer every call, follow up on every lead, and run your front office — 24/7. Built on your business's real context, with every decision logged and reversible. AI you can actually trust.",
 };
 
 export default function RootLayout({
@@ -30,15 +33,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${archivo.variable} ${splineSansMono.variable}`}
     >
       <body>
-        <ThemeRegistry>
-          <Navbar />
-          <main style={{ flex: 1 }}>{children}</main>
-          <Footer />
-          <ScrollToTop />
-        </ThemeRegistry>
+        <AppRouterCacheProvider options={{ key: "mui" }}>
+          <ThemeRegistry>
+            <Navbar />
+            <main style={{ flex: 1 }}>{children}</main>
+            <Footer />
+            <ScrollToTop />
+          </ThemeRegistry>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

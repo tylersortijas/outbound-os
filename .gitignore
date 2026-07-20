@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+
+# impeccable (design plugin) — ephemeral local state; keep config.json + design.json tracked
+.impeccable/live/server.json
+.impeccable/live/sessions/
+.impeccable/hook.cache.json

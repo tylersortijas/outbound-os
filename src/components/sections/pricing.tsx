@@ -1,49 +1,78 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import { Reveal } from "@/components/reveal";
+import { RecordLabel } from "@/components/record";
+import { CALENDLY_URL } from "@/lib/site";
 
-const plans = [
+interface Plan {
+  name: string;
+  setup: string;
+  monthly: string;
+  monthlyNote: string;
+  tagline: string;
+  features: string[];
+  cta: string;
+  featured: boolean;
+}
+
+const plans: Plan[] = [
   {
-    name: "System Build",
-    price: "$2,000 – $3,500",
-    period: "one-time",
-    description:
-      "We build and install your complete lead capture and booking automation system from scratch.",
+    name: "Front Office",
+    setup: "$3,000–4,000",
+    monthly: "$1,200–1,800",
+    monthlyNote: "/mo, managed",
+    tagline: "Your front desk, staffed 24/7 — for less than half a CSR's salary.",
     features: [
-      "Full GoHighLevel setup",
-      "Automated SMS follow-up workflows",
-      "Missed call text-back system",
-      "Booking calendar integration",
-      "Conversion-focused website",
-      "Lead pipeline configuration",
+      "AI Receptionist, Follow-up & Review Manager",
+      "Business Brain build & onboarding",
+      "Integration with your CRM & phone",
+      "Human escalation rules",
+      "Monthly performance report",
+      "Fully managed & monitored",
     ],
+    cta: "Book a demo",
     featured: false,
   },
   {
-    name: "Ongoing Management",
-    price: "$500 – $1,000",
-    period: "/mo",
-    description:
-      "We monitor, optimize, and manage your system so it keeps performing — you focus on running your business.",
+    name: "Full Workforce",
+    setup: "$6,000–9,000",
+    monthly: "$3,000–4,500",
+    monthlyNote: "/mo, managed",
+    tagline: "An entire office team for the cost of a single hire.",
     features: [
-      "System monitoring & optimization",
-      "SMS campaign management",
-      "Booking flow improvements",
-      "Performance reporting",
+      "Everything in Front Office",
+      "AI Office Manager & Scheduling / Dispatch",
+      "AI Estimator (with your approval)",
+      "AI Collections",
       "Priority support",
-      "New workflow builds as needed",
+      "Quarterly optimization reviews",
     ],
+    cta: "Book a demo",
     featured: true,
+  },
+  {
+    name: "Custom",
+    setup: "Let's talk",
+    monthly: "Custom",
+    monthlyNote: "quote",
+    tagline: "For multi-location shops and 50+ employees.",
+    features: [
+      "Multiple locations & brands",
+      "Custom AI employees",
+      "Deeper systems integration",
+      "Dedicated support",
+    ],
+    cta: "Talk to us",
+    featured: false,
   },
 ];
 
@@ -52,54 +81,51 @@ export function Pricing() {
     <Box
       component="section"
       id="pricing"
-      sx={{ borderTop: "1px solid", borderColor: "divider", py: { xs: 10, sm: 14 } }}
+      sx={{
+        borderTop: "1px solid",
+        borderColor: "divider",
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark" ? "#12151A" : "#F5F6F8",
+        py: { xs: 10, sm: 14 },
+      }}
     >
       <Container maxWidth="lg">
-        <Box textAlign="center" mb={8}>
-          <Typography
-            variant="overline"
-            color="text.secondary"
-            letterSpacing={3}
-          >
-            Pricing
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{ mt: 1, fontSize: { xs: "1.75rem", sm: "2.25rem" }, color: "text.primary" }}
-          >
-            Simple, Transparent Pricing
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mt: 2, maxWidth: 520, mx: "auto", fontSize: "1.1rem" }}
-          >
-            No hidden fees. No long-term contracts. Just systems that pay for
-            themselves.
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: 1.5, fontStyle: "italic" }}
-          >
-            Most clients start with a System Build, then add Ongoing Management.
-          </Typography>
+        <Box sx={{ textAlign: "center", maxWidth: 680, mx: "auto", mb: 7 }}>
+          <Reveal y={16}>
+            <RecordLabel>Pricing</RecordLabel>
+          </Reveal>
+          <Reveal y={20} delay={0.05}>
+            <Typography
+              variant="h2"
+              sx={{
+                mt: 1.5,
+                fontSize: { xs: "1.9rem", sm: "2.5rem" },
+                color: "text.primary",
+              }}
+            >
+              Priced against the hire you&apos;d make anyway
+            </Typography>
+          </Reveal>
+          <Reveal y={20} delay={0.1}>
+            <Typography
+              sx={{
+                mt: 2.5,
+                fontSize: "1.1rem",
+                lineHeight: 1.75,
+                color: "text.secondary",
+              }}
+            >
+              A one-time build plus a flat monthly to run it. Compare it to a
+              front-desk hire at $3,000–4,000/mo — the AI workforce never quits,
+              never calls in sick, and works around the clock.
+            </Typography>
+          </Reveal>
         </Box>
 
-        <Grid container spacing={3} justifyContent="center" sx={{ maxWidth: 900, mx: "auto" }}>
+        <Grid container spacing={3} alignItems="stretch">
           {plans.map((plan, i) => (
-            <Grid key={plan.name} size={{ xs: 12, sm: 6 }}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{
-                  delay: i * 0.1,
-                  duration: 0.5,
-                  ease: [0.16, 1, 0.3, 1] as const,
-                }}
-                style={{ height: "100%" }}
-              >
+            <Grid key={plan.name} size={{ xs: 12, md: 4 }}>
+              <Reveal y={24} delay={i * 0.1} style={{ height: "100%" }}>
                 <Card
                   sx={{
                     height: "100%",
@@ -108,53 +134,64 @@ export function Pricing() {
                     position: "relative",
                     overflow: "visible",
                     ...(plan.featured && {
-                      border: "2px solid",
                       borderColor: "primary.main",
-                      boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
+                      borderWidth: 2,
                     }),
                   }}
                 >
                   {plan.featured && (
-                    <Chip
-                      label="Most Popular"
-                      color="primary"
-                      size="small"
+                    <Box
                       sx={{
                         position: "absolute",
                         top: -12,
-                        right: 24,
+                        left: 24,
+                        px: 1.25,
+                        py: 0.4,
+                        borderRadius: "4px",
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                        fontFamily: "var(--font-mono), ui-monospace, monospace",
+                        fontSize: "0.65rem",
                         fontWeight: 600,
+                        letterSpacing: "0.08em",
                       }}
-                    />
+                    >
+                      MOST POPULAR
+                    </Box>
                   )}
-                  <CardContent sx={{ p: { xs: 3, sm: 4 }, flex: 1, display: "flex", flexDirection: "column" }}>
-                    <Typography variant="h6" fontWeight={600}>
+                  <CardContent
+                    sx={{
+                      p: { xs: 3, sm: 3.5 },
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
                       {plan.name}
                     </Typography>
-                    <Box sx={{ mt: 2 }}>
-                      <Typography
-                        component="span"
-                        variant="h4"
-                        fontWeight={700}
-                      >
-                        {plan.price}
-                      </Typography>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ ml: 0.5 }}
-                      >
-                        {plan.period}
-                      </Typography>
-                    </Box>
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ mt: 1.5 }}
+                      sx={{ mt: 1, minHeight: { sm: 44 }, lineHeight: 1.6 }}
                     >
-                      {plan.description}
+                      {plan.tagline}
                     </Typography>
+
+                    <Box sx={{ mt: 3 }}>
+                      <RecordLabel>Setup</RecordLabel>
+                      <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5 }}>
+                        {plan.setup}
+                      </Typography>
+                      <Stack direction="row" alignItems="baseline" spacing={0.75} sx={{ mt: 1.5 }}>
+                        <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                          {plan.monthly}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {plan.monthlyNote}
+                        </Typography>
+                      </Stack>
+                    </Box>
 
                     <Box
                       sx={{
@@ -169,11 +206,12 @@ export function Pricing() {
                         <Stack
                           key={feature}
                           direction="row"
-                          spacing={1.5}
-                          alignItems="center"
+                          spacing={1.25}
+                          alignItems="flex-start"
                         >
-                          <CheckCircleIcon
-                            sx={{ fontSize: 18, color: "primary.main" }}
+                          <CheckRoundedIcon
+                            sx={{ fontSize: 18, color: "primary.main", mt: "2px", flexShrink: 0 }}
+                            aria-hidden
                           />
                           <Typography variant="body2">{feature}</Typography>
                         </Stack>
@@ -182,16 +220,29 @@ export function Pricing() {
 
                     <Button
                       variant={plan.featured ? "contained" : "outlined"}
+                      color={plan.featured ? "primary" : "secondary"}
                       fullWidth
-                      href="#contact"
-                      sx={{ mt: 4 }}
                       size="large"
+                      href={CALENDLY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        mt: 4,
+                        ...(!plan.featured && {
+                          color: "text.primary",
+                          borderColor: "divider",
+                          "&:hover": {
+                            borderColor: "text.primary",
+                            bgcolor: "action.hover",
+                          },
+                        }),
+                      }}
                     >
-                      Get Started
+                      {plan.cta}
                     </Button>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </Reveal>
             </Grid>
           ))}
         </Grid>

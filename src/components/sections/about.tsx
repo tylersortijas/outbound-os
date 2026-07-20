@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -8,14 +7,35 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CellTowerIcon from "@mui/icons-material/CellTower";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import HubRoundedIcon from "@mui/icons-material/HubRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
+import EngineeringRoundedIcon from "@mui/icons-material/EngineeringRounded";
+import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
+import { Reveal } from "@/components/reveal";
+import { RecordLabel } from "@/components/record";
 
-const stats = [
-  { value: "< 60s", label: "Average lead response time", icon: <AccessTimeIcon /> },
-  { value: "24/7", label: "Always-on lead capture", icon: <CellTowerIcon /> },
-  { value: "2x–3x", label: "Typical booking rate increase", icon: <TrendingUpIcon /> },
+const principles = [
+  {
+    title: "One job per employee",
+    body: "Specialized AI employees that each own a single responsibility — not one bot pretending to do everything.",
+    icon: <HubRoundedIcon />,
+  },
+  {
+    title: "Logged & reversible",
+    body: "Every action is on the record and can be undone. You are never in the dark about what happened or why.",
+    icon: <HistoryRoundedIcon />,
+  },
+  {
+    title: "We run it, you don't",
+    body: "Fully managed. No dashboards to learn, no automations to babysit — we build it and keep it running.",
+    icon: <EngineeringRoundedIcon />,
+  },
+  {
+    title: "Humans on the hard calls",
+    body: "Your escalation rules hand the judgment calls straight to your team. The AI knows its limits.",
+    icon: <SupportAgentRoundedIcon />,
+  },
 ];
 
 export function About() {
@@ -26,118 +46,122 @@ export function About() {
       sx={{
         borderTop: "1px solid",
         borderColor: "divider",
-        bgcolor: "background.paper",
         py: { xs: 10, sm: 14 },
       }}
     >
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 6, lg: 8 }} alignItems="center">
-          {/* Left — copy */}
+          {/* Left — origin story */}
           <Grid size={{ xs: 12, lg: 6 }}>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
-            >
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                letterSpacing={3}
-              >
-                About Us
-              </Typography>
+            <Reveal x={-24} y={0}>
+              <RecordLabel>Why OutboundOS</RecordLabel>
               <Typography
                 variant="h2"
-                sx={{ mt: 1, fontSize: { xs: "1.75rem", sm: "2.25rem" }, color: "text.primary" }}
+                sx={{
+                  mt: 1.5,
+                  fontSize: { xs: "1.9rem", sm: "2.5rem" },
+                  color: "text.primary",
+                  textWrap: "balance",
+                }}
               >
-                Built by a Founder Who Gets It
+                Built after an electrician told me the truth
               </Typography>
-              <Stack spacing={2} sx={{ mt: 3 }}>
-                <Typography variant="body1" color="text.secondary" lineHeight={1.8}>
-                  Most service businesses lose 40–60% of their inbound leads to
-                  slow follow-up. Not because they don&apos;t care — because
-                  they&apos;re busy doing the work.
+              <Stack spacing={2.5} sx={{ mt: 3 }}>
+                <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
+                  OutboundOS started as an AI receptionist. Then a client — an
+                  electrician — said the thing that changed the company: he
+                  didn&apos;t distrust AI. He distrusted AI making decisions
+                  without enough context about his business.
                 </Typography>
-                <Typography variant="body1" color="text.secondary" lineHeight={1.8}>
-                  OutboundOS was built to fix that. We replace inconsistent
-                  human follow-up with predictable, automated systems that
-                  ensure every inquiry gets an immediate response and a clear
-                  path to book.
-                </Typography>
-                <Typography
-                  variant="h6"
+                <Box
                   sx={{
-                    fontWeight: 600,
-                    borderLeft: "3px solid",
-                    borderColor: "primary.main",
-                    pl: 2.5,
-                    py: 1,
-                    color: "text.primary",
-                    fontSize: { xs: "1.05rem", sm: "1.15rem" },
-                    lineHeight: 1.6,
+                    p: 3,
+                    borderRadius: "12px",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    bgcolor: (theme) =>
+                      theme.palette.mode === "dark" ? "#12151A" : "#F5F6F8",
                   }}
                 >
-                  &ldquo;We build revenue infrastructure — not marketing
-                  hype.&rdquo;
+                  <FormatQuoteRoundedIcon
+                    sx={{ fontSize: 26, color: "primary.main", mb: 0.5 }}
+                    aria-hidden
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: "text.primary",
+                      fontSize: { xs: "1.15rem", sm: "1.3rem" },
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    He didn&apos;t distrust AI. He distrusted AI that didn&apos;t
+                    know his business.
+                  </Typography>
+                </Box>
+                <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
+                  So we stopped selling one bot and built a workforce: specialized
+                  AI employees that share one Business Brain and work under human
+                  oversight. We&apos;re not an agency handing you software to run —
+                  we build and operate the system, and you stay in control.
                 </Typography>
-                <Typography variant="body1" color="text.secondary" lineHeight={1.8}>
-                  We&apos;re not an agency. We build the systems that run in
-                  the background so you can focus on what you do best.
+                <Typography
+                  sx={{
+                    fontFamily: "var(--font-mono), ui-monospace, monospace",
+                    fontSize: "0.8rem",
+                    letterSpacing: "0.06em",
+                    color: "text.secondary",
+                  }}
+                >
+                  — Francisco Roncalli, Founder
                 </Typography>
               </Stack>
-            </motion.div>
+            </Reveal>
           </Grid>
 
-          {/* Right — stats */}
+          {/* Right — honest principles (no invented metrics) */}
           <Grid size={{ xs: 12, lg: 6 }}>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{
-                duration: 0.6,
-                delay: 0.2,
-                ease: [0.16, 1, 0.3, 1] as const,
-              }}
-            >
-              <Stack spacing={2.5}>
-                {stats.map((stat) => (
-                  <Card key={stat.label}>
-                    <CardContent>
-                      <Stack direction="row" spacing={2.5} alignItems="center">
+            <Grid container spacing={2.5}>
+              {principles.map((p, i) => (
+                <Grid key={p.title} size={{ xs: 12, sm: 6 }}>
+                  <Reveal y={24} delay={i * 0.08} style={{ height: "100%" }}>
+                    <Card sx={{ height: "100%" }}>
+                      <CardContent sx={{ p: 3 }}>
                         <Box
                           sx={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: 2,
-                            bgcolor: (theme) =>
-                              theme.palette.mode === "dark"
-                                ? "rgba(59,130,246,0.15)"
-                                : "rgba(37,99,235,0.08)",
+                            width: 44,
+                            height: 44,
+                            borderRadius: "8px",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             color: "primary.main",
-                            flexShrink: 0,
+                            bgcolor: (theme) =>
+                              theme.palette.mode === "dark"
+                                ? "rgba(240,134,47,0.12)"
+                                : "rgba(232,112,30,0.10)",
+                            mb: 2,
                           }}
                         >
-                          {stat.icon}
+                          {p.icon}
                         </Box>
-                        <Box>
-                          <Typography variant="h5" fontWeight={700}>
-                            {stat.value}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {stat.label}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            </motion.div>
+                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                          {p.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ lineHeight: 1.7 }}
+                        >
+                          {p.body}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Reveal>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         </Grid>
       </Container>
