@@ -1,253 +1,232 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
+import { alpha, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { useColorMode } from "@/components/ThemeRegistry";
-import { NAV_LINKS, SECTION_IDS, CALENDLY_URL } from "@/lib/site";
+import { NAV_LINKS, CALENDLY_URL, CONTACT_EMAIL } from "@/lib/site";
 
-function Wordmark() {
+export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
+  const box = size === "sm" ? 19 : 28;
   return (
     <Box
       component="a"
       href="#top"
       aria-label="OutboundOS home"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        textDecoration: "none",
-        color: "text.primary",
-      }}
+      sx={{ display: "flex", alignItems: "center", gap: 0.75, textDecoration: "none", color: "text.primary" }}
     >
       <Box
         aria-hidden
         sx={{
-          width: 30,
-          height: 30,
-          borderRadius: "8px",
-          bgcolor: "secondary.main",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          width: box,
+          height: box,
+          borderRadius: "5px",
+          bgcolor: "text.primary",
+          color: "background.paper",
+          display: "grid",
+          placeItems: "center",
+          fontWeight: 800,
+          fontSize: size === "sm" ? 12 : 17,
+          lineHeight: 1,
         }}
       >
-        <Typography
-          component="span"
-          sx={{
-            fontFamily: "var(--font-mono), ui-monospace, monospace",
-            fontWeight: 600,
-            fontSize: "1rem",
-            color: "primary.main",
-            lineHeight: 1,
-          }}
-        >
-          O
-        </Typography>
+        O
       </Box>
-      <Typography variant="h6" fontWeight={700} letterSpacing="-0.02em">
-        Outbound
+      <Typography
+        component="span"
+        sx={{ fontWeight: 700, letterSpacing: "-0.03em", fontSize: size === "sm" ? 15 : 21, lineHeight: 1 }}
+      >
+        outbound
         <Box component="span" sx={{ color: "primary.main" }}>
           OS
+        </Box>
+        <Box component="span" sx={{ color: "primary.main" }}>
+          .
         </Box>
       </Typography>
     </Box>
   );
 }
 
-export function Navbar() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+function ThemeToggle() {
   const { mode, toggleColorMode } = useColorMode();
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        }
-      },
-      { rootMargin: "-40% 0px -55% 0px" }
-    );
-    for (const id of SECTION_IDS) {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    }
-    return () => observer.disconnect();
-  }, []);
-
+  const theme = useTheme();
   return (
-    <AppBar
-      position="sticky"
-      elevation={0}
+    <Button
+      variant="outlined"
+      onClick={toggleColorMode}
+      aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      color={mode === "light" ? "primary" : "secondary"}
       sx={{
-        bgcolor: scrolled
-          ? (theme) =>
-              theme.palette.mode === "dark"
-                ? "rgba(15,17,21,0.9)"
-                : "rgba(255,255,255,0.9)"
-          : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid" : "1px solid transparent",
-        borderColor: scrolled ? "divider" : "transparent",
-        boxShadow: scrolled ? "0 1px 0 rgba(0,0,0,0.02)" : "none",
-        transition: "background-color 0.3s ease, border-color 0.3s ease",
+        borderRadius: 2,
+        minWidth: "auto",
+        padding: 0.5,
+        borderColor: alpha(theme.palette.divider, 0.2),
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ height: 68 }}>
-          <Wordmark />
+      {mode === "light" ? (
+        <DarkModeOutlinedIcon sx={{ width: 20, height: 20 }} />
+      ) : (
+        <LightModeOutlinedIcon sx={{ width: 20, height: 20 }} />
+      )}
+    </Button>
+  );
+}
 
-          <Box sx={{ flex: 1 }} />
+function TopBar() {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        gap: { xs: 1, sm: 2 },
+        maxWidth: 1236,
+        mx: "auto",
+        px: 2,
+        pt: 1,
+      }}
+    >
+      <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" underline="none" color="text.primary" sx={{ display: "flex", alignItems: "center" }}>
+        Live demo
+        <Box
+          component="span"
+          sx={{
+            ml: 1,
+            px: 0.5,
+            borderRadius: 1,
+            bgcolor: "primary.main",
+            color: "common.white",
+            fontSize: 10,
+            lineHeight: "16px",
+            textTransform: "uppercase",
+            fontWeight: 700,
+          }}
+        >
+          new
+        </Box>
+      </Link>
+      <Link href="#pricing" underline="none" color="text.primary">
+        Pricing
+      </Link>
+      <Link href={`mailto:${CONTACT_EMAIL}`} underline="none" color="text.primary" sx={{ display: { xs: "none", sm: "inline" } }}>
+        Email us
+      </Link>
+      <ThemeToggle />
+    </Box>
+  );
+}
 
-          {/* Desktop nav */}
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
-          >
-            {NAV_LINKS.map((link) => {
-              const isActive = `#${activeSection}` === link.href;
-              return (
-                <Button
-                  key={link.href}
-                  href={link.href}
-                  sx={{
-                    color: isActive ? "text.primary" : "text.secondary",
-                    fontWeight: 600,
-                    "&:hover": { color: "text.primary", bgcolor: "action.hover" },
-                    transition: "color 0.2s ease",
-                  }}
-                >
+export function Navbar() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 38 });
+
+  return (
+    <>
+      <Box id="top" sx={{ bgcolor: "background.paper" }}>
+        <TopBar />
+      </Box>
+      <AppBar
+        position="sticky"
+        elevation={trigger ? 1 : 0}
+        sx={{ top: 0, bgcolor: "background.paper", color: "text.primary", backgroundImage: "none" }}
+      >
+        <Box
+          sx={{
+            maxWidth: 1236,
+            width: 1,
+            mx: "auto",
+            px: 2,
+            py: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Logo />
+
+          <Box sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}>
+            {NAV_LINKS.map((link) => (
+              <Box key={link.href} marginLeft={4}>
+                <Link href={link.href} underline="none" color="text.primary" sx={{ "&:hover": { color: "primary.main" } }}>
                   {link.label}
-                </Button>
-              );
-            })}
-            <Button
-              variant="contained"
-              color="primary"
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ ml: 1 }}
-            >
-              Book a demo
-            </Button>
-            <IconButton
-              onClick={toggleColorMode}
-              size="small"
-              sx={{ color: "text.secondary" }}
-              aria-label={
-                mode === "dark" ? "Switch to light mode" : "Switch to dark mode"
-              }
-            >
-              {mode === "dark" ? (
-                <LightModeIcon fontSize="small" />
-              ) : (
-                <DarkModeIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Stack>
+                </Link>
+              </Box>
+            ))}
+            <Box marginLeft={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ boxShadow: theme.customShadows.button }}
+              >
+                Book a demo
+              </Button>
+            </Box>
+          </Box>
 
-          {/* Mobile icons */}
-          <Stack direction="row" spacing={0.5} sx={{ display: { md: "none" } }}>
-            <IconButton
-              onClick={toggleColorMode}
-              size="small"
-              sx={{ color: "text.secondary" }}
-              aria-label={
-                mode === "dark" ? "Switch to light mode" : "Switch to dark mode"
-              }
-            >
-              {mode === "dark" ? (
-                <LightModeIcon fontSize="small" />
-              ) : (
-                <DarkModeIcon fontSize="small" />
-              )}
-            </IconButton>
-            <IconButton
+          <Box sx={{ display: { xs: "flex", lg: "none" }, alignItems: "center" }}>
+            <Button
               onClick={() => setDrawerOpen(true)}
               aria-label="Open menu"
+              variant="outlined"
+              sx={{ borderRadius: 2, minWidth: "auto", padding: 1, borderColor: alpha(theme.palette.divider, 0.2) }}
             >
               <MenuIcon />
-            </IconButton>
-          </Stack>
+            </Button>
+          </Box>
+        </Box>
+      </AppBar>
 
-          {/* Mobile drawer */}
-          <Drawer
-            anchor="top"
-            open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        slotProps={{ paper: { sx: { width: 280 } } }}
+      >
+        <Box sx={{ p: 2, height: 1, display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={{ py: 1 }}>
+            <Logo />
+          </Box>
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              underline="none"
+              color="text.primary"
+              onClick={() => setDrawerOpen(false)}
+              sx={{ fontWeight: 400, py: 0.5 }}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            fullWidth
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setDrawerOpen(false)}
           >
-            <Box sx={{ p: 2 }}>
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}
-              >
-                <IconButton
-                  onClick={() => setDrawerOpen(false)}
-                  aria-label="Close menu"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-              <List>
-                {NAV_LINKS.map((link) => (
-                  <ListItemButton
-                    key={link.href}
-                    component="a"
-                    href={link.href}
-                    onClick={() => setDrawerOpen(false)}
-                  >
-                    <ListItemText
-                      primary={link.label}
-                      primaryTypographyProps={{
-                        fontWeight: 600,
-                        fontSize: "1.1rem",
-                      }}
-                    />
-                  </ListItemButton>
-                ))}
-              </List>
-              <Stack spacing={1.5} sx={{ mt: 2, px: 2 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  href={CALENDLY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setDrawerOpen(false)}
-                >
-                  Book a demo
-                </Button>
-              </Stack>
-            </Box>
-          </Drawer>
-        </Toolbar>
-      </Container>
-    </AppBar>
+            Book a demo
+          </Button>
+        </Box>
+      </Drawer>
+    </>
   );
 }
