@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
     const { name, email, company, message } = await request.json();
@@ -13,9 +11,27 @@ export async function POST(request: Request) {
       );
     }
 
+    // Read config per request: Resend's constructor throws on a missing key, and
+    // at module scope that throw fails `next build` itself (page-data collection)
+    // in any environment without the vars — e.g. Vercel preview deployments.
+    const apiKey = process.env.RESEND_API_KEY;
+    const to = process.env.CONTACT_EMAIL;
+
+    if (!apiKey || !to) {
+      console.error(
+        `Contact form not configured: missing ${!apiKey ? "RESEND_API_KEY" : ""}${!apiKey && !to ? " and " : ""}${!to ? "CONTACT_EMAIL" : ""}.`
+      );
+      return Response.json(
+        { error: "The contact form isn't available right now. Please email us directly." },
+        { status: 503 }
+      );
+    }
+
+    const resend = new Resend(apiKey);
+
     await resend.emails.send({
       from: "OutboundOS <onboarding@resend.dev>",
-      to: process.env.CONTACT_EMAIL!,
+      to,
       subject: `New inquiry from ${name}${company ? ` (${company})` : ""}`,
       replyTo: email,
       html: `

@@ -7,16 +7,9 @@ export const CALENDLY_URL =
 export const CONTACT_EMAIL = "francisco.r@outboundos.net";
 
 export const NAV_LINKS = [
-  { label: "How it works", href: "#how-it-works" },
   { label: "The Workforce", href: "#workforce" },
+  { label: "How it works", href: "#how-it-works" },
+  { label: "Why OutboundOS", href: "#why" },
   { label: "Pricing", href: "#pricing" },
-] as const;
-
-// Section ids observed for active-link highlighting in the navbar.
-export const SECTION_IDS = [
-  "how-it-works",
-  "workforce",
-  "pricing",
-  "about",
-  "contact",
+  { label: "Contact", href: "#contact" },
 ] as const;

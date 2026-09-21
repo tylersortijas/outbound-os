@@ -1,125 +1,106 @@
 "use client";
 
-import { createTheme } from "@mui/material/styles";
+import {
+  createTheme,
+  responsiveFontSizes,
+  type ThemeOptions,
+} from "@mui/material/styles";
 
-// "The Service Manual" — graphite + steel with one high-visibility safety-amber
-// accent. No blue (category reflex), no warm cream. Flat by default; depth from
-// hairlines and tonal layers. Tokens are the source of truth in DESIGN.md.
+// Visual language cloned from the MUI "theFront" landing page: Inter, a single
+// blue primary, a warm-yellow highlight, soft grey-blue shadows, and an
+// "alternate" tint for banded sections. Values were measured from the live
+// template, not estimated.
 
-const shared = {
+declare module "@mui/material/styles" {
+  interface TypeBackground {
+    level2: string;
+    level1: string;
+    alternate: string;
+  }
+  interface Palette {
+    alternate: { main: string; dark: string };
+  }
+  interface PaletteOptions {
+    alternate?: { main: string; dark: string };
+  }
+  interface Theme {
+    customShadows: { card: string; cardHover: string; button: string; mock: string };
+  }
+  interface ThemeOptions {
+    customShadows?: { card: string; cardHover: string; button: string; mock: string };
+  }
+}
+
+const shared: ThemeOptions = {
   typography: {
-    fontFamily: "var(--font-archivo), system-ui, sans-serif",
-    h1: { fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.02 },
-    h2: { fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1 },
-    h3: { fontWeight: 700, letterSpacing: "-0.01em" },
-    h4: { fontWeight: 700, letterSpacing: "-0.01em" },
-    h5: { fontWeight: 700 },
-    h6: { fontWeight: 700 },
-    button: { textTransform: "none" as const, fontWeight: 600 },
-    overline: {
-      fontFamily: "var(--font-mono), ui-monospace, monospace",
-      fontWeight: 500,
-      letterSpacing: "0.08em",
-    },
+    fontFamily: "var(--font-inter), sans-serif",
+    button: { textTransform: "none", fontWeight: 400 },
   },
   shape: { borderRadius: 8 },
   components: {
     MuiButton: {
-      defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 8, padding: "10px 22px" },
-        sizeLarge: { padding: "14px 28px", fontSize: "1rem" },
+        root: { borderRadius: 5, fontWeight: 400 },
+        sizeLarge: { padding: "10px 22px", fontSize: "0.9375rem" },
+        containedSecondary: { color: "white" },
       },
     },
-    MuiTextField: {
-      defaultProps: { variant: "outlined" as const },
-    },
-    MuiChip: {
-      styleOverrides: { root: { borderRadius: 6, fontWeight: 600 } },
-    },
+    MuiInputBase: { styleOverrides: { root: { borderRadius: 5 } } },
+    MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 5 } } },
+    MuiCard: { styleOverrides: { root: { borderRadius: 8 } } },
   },
 };
 
-export const lightTheme = createTheme({
-  ...shared,
-  palette: {
-    mode: "light",
-    // Safety Amber — the single hi-vis accent. Dark ink text on amber fills.
-    primary: {
-      main: "#E8701E",
-      light: "#F2A86A",
-      dark: "#C85A12",
-      contrastText: "#16181D",
-    },
-    // Graphite Ink — the workhorse; secondary (non-CTA) buttons and surfaces.
-    secondary: {
-      main: "#16181D",
-      light: "#20242C",
-      dark: "#000000",
-      contrastText: "#FFFFFF",
-    },
-    background: { default: "#FFFFFF", paper: "#FFFFFF" },
-    text: { primary: "#16181D", secondary: "#565D69" },
-    divider: "#E4E7EA",
-  },
-  components: {
-    ...shared.components,
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          border: "1px solid #E4E7EA",
-          boxShadow: "none",
-          transition:
-            "box-shadow 0.16s cubic-bezier(0.22,1,0.36,1), transform 0.16s cubic-bezier(0.22,1,0.36,1)",
-        },
+export const lightTheme = responsiveFontSizes(
+  createTheme({
+    ...shared,
+    palette: {
+      mode: "light",
+      primary: { main: "#377dff", light: "#467de3", dark: "#2f6ad9", contrastText: "#fff" },
+      secondary: { main: "#f9b934", light: "#ffb74d", dark: "#FF9800", contrastText: "rgba(0, 0, 0, 0.87)" },
+      text: { primary: "#1e2022", secondary: "#677788" },
+      divider: "rgba(0, 0, 0, 0.12)",
+      background: {
+        default: "#ffffff",
+        paper: "#ffffff",
+        level2: "#f5f5f5",
+        level1: "#ffffff",
+        alternate: "#f7faff",
       },
+      alternate: { main: "#f7faff", dark: "#edf1f7" },
     },
-    MuiAppBar: {
-      styleOverrides: { root: { color: "#16181D" } },
+    customShadows: {
+      card: "0 3px 6px 0 rgba(140, 152, 164, 0.25)",
+      cardHover: "0 12px 15px 0 rgba(140, 152, 164, 0.25)",
+      button: "0 12px 15px 0 rgba(140, 152, 164, 0.1)",
+      mock: "0 6px 24px 0 rgba(140, 152, 164, 0.125)",
     },
-  },
-});
+  }),
+);
 
-export const darkTheme = createTheme({
-  ...shared,
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#F0862F",
-      light: "#F6A86A",
-      dark: "#E8701E",
-      contrastText: "#16181D",
-    },
-    secondary: {
-      main: "#F2F4F7",
-      light: "#FFFFFF",
-      dark: "#C7CDD6",
-      contrastText: "#16181D",
-    },
-    background: { default: "#0F1115", paper: "#181B21" },
-    text: { primary: "#F2F4F7", secondary: "#A7AEBA" },
-    divider: "#2A2F38",
-  },
-  components: {
-    ...shared.components,
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          border: "1px solid #2A2F38",
-          boxShadow: "none",
-          backgroundColor: "#181B21",
-          transition:
-            "box-shadow 0.16s cubic-bezier(0.22,1,0.36,1), transform 0.16s cubic-bezier(0.22,1,0.36,1)",
-        },
+export const darkTheme = responsiveFontSizes(
+  createTheme({
+    ...shared,
+    palette: {
+      mode: "dark",
+      primary: { main: "#1976d2", light: "#2196f3", dark: "#0d47a1", contrastText: "#fff" },
+      secondary: { main: "#f9b934", light: "#ffb74d", dark: "#FF9800", contrastText: "rgba(0, 0, 0, 0.87)" },
+      text: { primary: "#eeeeef", secondary: "#aeb0b4" },
+      divider: "rgba(255, 255, 255, 0.12)",
+      background: {
+        default: "#222B45",
+        paper: "#222B45",
+        level2: "#333",
+        level1: "#2D3748",
+        alternate: "#1a2138",
       },
+      alternate: { main: "#1a2138", dark: "#151a30" },
     },
-    MuiAppBar: {
-      styleOverrides: { root: { color: "#F2F4F7" } },
+    customShadows: {
+      card: "0 3px 6px 0 rgba(0, 0, 0, 0.25)",
+      cardHover: "0 12px 15px 0 rgba(0, 0, 0, 0.35)",
+      button: "0 12px 15px 0 rgba(0, 0, 0, 0.1)",
+      mock: "0 6px 24px 0 rgba(0, 0, 0, 0.3)",
     },
-    MuiDrawer: {
-      styleOverrides: { paper: { backgroundColor: "#181B21" } },
-    },
-  },
-});
+  }),
+);
