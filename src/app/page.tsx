@@ -371,7 +371,40 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-16 border-t border-line" aria-labelledby="who-heading">
+        <section className="border-t border-line" aria-labelledby="builder-heading">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+            <p className="text-xs tracking-[0.2em] text-glow uppercase">Francisco Roncalli</p>
+            <h2 id="builder-heading" className="rise mt-4 max-w-3xl text-4xl leading-[0.95] font-semibold tracking-[-0.04em] md:text-6xl">
+              Working software. Not a deck.
+            </h2>
+            <p className="rise mt-6 max-w-xl text-lg leading-relaxed text-muted">
+              He takes a messy business problem and ships the system. One person, so a company gets a senior builder without hiring a team.
+            </p>
+            <ol className="rise mt-14 grid overflow-hidden rounded-3xl border border-line md:grid-cols-3">
+              {[
+                [
+                  "Ships it",
+                  "Tech lead on a production system. The benchmark above is that work, after about 1,100 documents. Not a prototype that falls apart in use.",
+                ],
+                [
+                  "Knows if it holds",
+                  "Lead developer for Samsung, the Golden State Warriors, and Delta Air Lines. Mentored by the lead software engineer for Amazon Prime Video. He picks the tools, builds the thing, and can tell whether it works, scales, and is actually good.",
+                ],
+                [
+                  "No team to hire",
+                  "That work happens as one person. A business does not stand up a department to get a senior builder.",
+                ],
+              ].map(([title, body], i) => (
+                <li key={title} className={`p-7 md:p-8 ${i > 0 ? "border-t border-line md:border-t-0 md:border-l" : ""}`}>
+                  <p className="text-sm text-glow">{title}</p>
+                  <p className="mt-4 text-base leading-relaxed text-ink/80">{body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className="border-t border-line" aria-labelledby="who-heading">
           <div className="mx-auto grid max-w-6xl md:grid-cols-2">
             <div className="rise px-5 py-16 md:pr-16 md:pl-5">
               <h2 id="who-heading" className="text-3xl font-semibold tracking-tight">
