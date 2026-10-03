@@ -132,6 +132,25 @@
   box-shadow: inset 2px 0 0 #e7d3c2;
 }
 
+.scroll-stem {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 3rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.scroll-stem::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 0.8rem;
+  background: #f5f5f7;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .display {
     background-image: linear-gradient(105deg, #f5f5f7 0%, #f5f5f7 40%, #ffffff 50%, #e7d3c2 56%, #f5f5f7 66%, #f5f5f7 100%);
@@ -168,6 +187,10 @@
 
   .hit-in {
     animation: oo-hit 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .scroll-stem::after {
+    animation: oo-stem 1.6s ease-in-out infinite;
   }
 }
 
@@ -217,6 +240,11 @@
 @keyframes oo-hit {
   from { opacity: 0.2; clip-path: inset(0 100% 0 0); }
   to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes oo-stem {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(3rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {

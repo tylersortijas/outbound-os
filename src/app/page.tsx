@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type RefObject } from "react";
 
 const CALENDLY = "https://calendly.com/francisco-r-outboundos/30min";
 const LINKEDIN = "https://www.linkedin.com/in/franciscoroncalli/";
@@ -154,102 +154,128 @@ const TICKER = [
   "A real deployment, not a demo",
 ];
 
-function Theater() {
-  const [scene, setScene] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const item = SCENES[scene];
+function useScrub(ref: RefObject<HTMLElement | null>) {
+  const [p, setP] = useState(0);
 
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => setScene((s) => (s + 1) % SCENES.length), 5600);
-    return () => window.clearInterval(id);
-  }, [paused]);
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const measure = () => {
+      const total = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), Math.max(total, 0));
+      setP(total > 0 ? scrolled / total : 0);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [ref]);
+
+  return p;
+}
+
+function ScrollShow() {
+  const ref = useRef<HTMLElement>(null);
+  const p = useScrub(ref);
+  const scaled = Math.min(0.999, p) * SCENES.length;
+  const index = Math.min(SCENES.length - 1, Math.floor(scaled));
+  const local = scaled - index;
+  const item = SCENES[index];
+  const answer = Math.min(1, Math.max(0, (local - 0.32) / 0.38));
+
+  const jump = (i: number) => {
+    const el = ref.current;
+    if (!el) return;
+    const total = el.offsetHeight - window.innerHeight;
+    const top = el.getBoundingClientRect().top + window.scrollY + (i / SCENES.length) * total + 4;
+    window.scrollTo({ top, behavior: "smooth" });
+  };
 
   return (
-    <div
-      className="relative mx-auto mt-16 max-w-3xl text-left"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div className="halo absolute -inset-24 -z-10" aria-hidden />
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-        {SCENES.map((s, i) => (
-          <button
-            key={s.kicker}
-            type="button"
-            onClick={() => {
-              setScene(i);
-              setPaused(true);
-            }}
-            className={`shrink-0 rounded-full border px-4 py-2 text-sm transition-colors ${
-              i === scene ? "border-ink/30 bg-ink text-canvas" : "border-line text-muted hover:text-ink"
-            }`}
-          >
-            {s.kicker}
-          </button>
-        ))}
-      </div>
-      <div className="stage">
-        <figure className="glass relative overflow-hidden rounded-[1.75rem] p-6 md:p-8" style={{ transformStyle: "preserve-3d" }}>
-          <figcaption className="flex items-center justify-between text-xs text-muted">
-            <span>Sample. Not a client file.</span>
-            <span className="tabular-nums">{paused ? "Paused" : "Playing"}</span>
-          </figcaption>
-          <p key={item.q} className="answer-in mt-6 font-serif text-2xl leading-snug md:text-3xl">
-            {item.q}
-          </p>
-          <div key={item.cite} className="mt-6 space-y-3 text-sm leading-relaxed text-ink/55">
-            <p>{item.before}</p>
-            <p className="cite-hit hit-in rounded-r-xl py-2 pr-3 pl-3 text-ink">{item.hit}</p>
-            <p>{item.after}</p>
+    <section ref={ref} className="relative h-[260vh] md:h-[340vh]" aria-label="A citation, scrolled">
+      <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
+        <div className="mx-auto w-full max-w-3xl px-5">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div className="flex gap-2 overflow-x-auto">
+              {SCENES.map((s, i) => (
+                <button
+                  key={s.kicker}
+                  type="button"
+                  onClick={() => jump(i)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition-colors ${
+                    i === index ? "border-ink/30 bg-ink text-canvas" : "border-line text-muted hover:text-ink"
+                  }`}
+                >
+                  {s.kicker}
+                </button>
+              ))}
+            </div>
+            <p className="hidden text-xs text-muted tabular-nums sm:block">{String(index + 1).padStart(2, "0")} / 03</p>
           </div>
-          <div key={item.a} className="answer-in mt-6 border-t border-line pt-5">
-            <p className="text-lg leading-relaxed">{item.a}</p>
-            <p className="mt-2 text-xs text-glow">Master services agreement · {item.cite}</p>
+          <div className="mb-4 h-px bg-line">
+            <div className="h-px origin-left bg-ink" style={{ transform: `scaleX(${p})` }} />
           </div>
-        </figure>
+          <figure className="glass relative overflow-hidden rounded-[1.75rem] p-6 text-left md:p-8">
+            <div className="halo absolute -inset-24 -z-10" aria-hidden />
+            <figcaption className="text-xs text-muted">Sample. Not a client file. Scroll to read it.</figcaption>
+            <p className="mt-6 font-serif text-2xl leading-snug md:text-3xl">{item.q}</p>
+            <div className="mt-6 space-y-3 text-sm leading-relaxed text-ink/55">
+              <p style={{ opacity: 0.35 + local * 0.4 }}>{item.before}</p>
+              <p
+                className="cite-hit rounded-r-xl py-2 pr-3 pl-3 text-ink"
+                style={{ clipPath: `inset(0 ${(1 - Math.min(1, local / 0.55)) * 100}% 0 0)` }}
+              >
+                {item.hit}
+              </p>
+              <p style={{ opacity: Math.min(1, Math.max(0, (local - 0.45) / 0.35)) }}>{item.after}</p>
+            </div>
+            <div
+              className="mt-6 border-t border-line pt-5"
+              style={{ opacity: answer, transform: `translateY(${(1 - answer) * 14}px)` }}
+            >
+              <p className="text-lg leading-relaxed">{item.a}</p>
+              <p className="mt-2 text-xs text-glow">Master services agreement · {item.cite}</p>
+            </div>
+          </figure>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function Chapters() {
   const ref = useRef<HTMLElement>(null);
-  const [step, setStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const onScroll = () => {
-      const total = el.offsetHeight - window.innerHeight;
-      const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), Math.max(total, 0));
-      const p = total > 0 ? scrolled / total : 0;
-      setProgress(p);
-      setStep(p < 0.34 ? 0 : p < 0.67 ? 1 : 2);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
+  const p = useScrub(ref);
+  const scaled = Math.min(0.999, p) * CHAPTERS.length;
+  const step = Math.min(CHAPTERS.length - 1, Math.floor(scaled));
   const chapter = CHAPTERS[step];
 
   return (
-    <section ref={ref} className="relative hidden h-[280vh] md:block" aria-labelledby="how-heading">
-      <div className="sticky top-0 flex h-screen items-center">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-16 px-5">
-          <div className="relative h-64 w-px bg-line" aria-hidden>
-            <div className="absolute inset-x-0 top-0 w-px bg-ink" style={{ height: `${progress * 100}%` }} />
+    <section ref={ref} className="relative h-[220vh] md:h-[300vh]" aria-labelledby="how-heading">
+      <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-8 px-5 md:gap-16">
+          <div className="relative h-48 w-px bg-line md:h-64" aria-hidden>
+            <div className="absolute inset-x-0 top-0 w-px bg-ink" style={{ height: `${p * 100}%` }} />
           </div>
           <div>
             <p className="text-sm text-glow tabular-nums">{chapter.n} / 03</p>
-            <h2 id="how-heading" key={chapter.n} className="answer-in mt-4 max-w-3xl text-6xl leading-[0.95] font-semibold tracking-[-0.045em]">
+            <h2
+              id="how-heading"
+              className="mt-4 max-w-3xl text-4xl leading-[0.95] font-semibold tracking-[-0.045em] md:text-6xl"
+              style={{ transform: `translateY(${(1 - (scaled - step)) * 18}px)` }}
+            >
               {chapter.title}
             </h2>
-            <p key={chapter.body} className="answer-in mt-6 max-w-xl text-lg leading-relaxed text-muted">
-              {chapter.body}
-            </p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{chapter.body}</p>
             <ol className="sr-only">
               {CHAPTERS.map((c) => (
                 <li key={c.n}>
@@ -271,9 +297,17 @@ export default function Home() {
   useEffect(() => {
     const onScroll = () => {
       const el = bar.current;
-      if (!el) return;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      el.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+      if (el) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        el.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+      }
+      const heroEl = hero.current;
+      const copy = heroEl?.querySelector<HTMLElement>("[data-hero-copy]");
+      if (heroEl && copy) {
+        const passed = Math.min(1, Math.max(0, -heroEl.getBoundingClientRect().top / (heroEl.offsetHeight * 0.65)));
+        copy.style.transform = `translateY(${passed * 48}px)`;
+        copy.style.opacity = String(1 - passed * 0.9);
+      }
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -322,7 +356,7 @@ export default function Home() {
             <div className="aurora-a -top-40 left-1/2 -translate-x-[70%]" />
             <div className="aurora-b top-10 left-1/2 -translate-x-[-10%]" />
           </div>
-          <div className="relative mx-auto max-w-4xl">
+          <div data-hero-copy className="relative mx-auto max-w-4xl">
             <p className="text-sm text-glow">Cited, or it doesn’t count.</p>
             <h1 className="display mx-auto mt-5 max-w-4xl text-5xl leading-[0.96] font-semibold tracking-[-0.045em] md:text-7xl">
               The citation comes with the answer.
@@ -337,9 +371,14 @@ export default function Home() {
                 Or start with a $200 audit of 5 to 10 documents. Credited if you proceed.
               </p>
             </div>
-            <Theater />
+            <div className="mt-14 flex flex-col items-center gap-3 text-xs tracking-[0.22em] text-muted uppercase">
+              <span>Scroll the file</span>
+              <span className="scroll-stem" aria-hidden />
+            </div>
           </div>
         </section>
+
+        <ScrollShow />
 
         <div className="overflow-hidden border-y border-line py-4" aria-hidden>
           <div className="marquee-track text-sm tracking-tight text-muted">
@@ -373,21 +412,6 @@ export default function Home() {
         </section>
 
         <Chapters />
-
-        <section className="mx-auto max-w-6xl px-5 py-16 md:hidden" aria-labelledby="how-mobile">
-          <h2 id="how-mobile" className="text-4xl font-semibold tracking-tight">
-            How an answer is cited
-          </h2>
-          <ol className="mt-8 space-y-4">
-            {CHAPTERS.map((c) => (
-              <li key={c.n} className="glass rounded-3xl p-6">
-                <span className="text-sm text-glow tabular-nums">{c.n}</span>
-                <p className="mt-4 text-2xl font-semibold tracking-tight">{c.title}</p>
-                <p className="mt-3 leading-relaxed text-muted">{c.body}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
 
         <section className="mt-16 border-t border-line" aria-labelledby="who-heading">
           <div className="mx-auto grid max-w-6xl md:grid-cols-2">
