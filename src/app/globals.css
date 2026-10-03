@@ -151,6 +151,21 @@
   background: #f5f5f7;
 }
 
+.caret {
+  width: 1px;
+  height: 1.15em;
+  background: #f5f5f7;
+}
+
+.sheet-scan {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -40%;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .display {
     background-image: linear-gradient(105deg, #f5f5f7 0%, #f5f5f7 40%, #ffffff 50%, #e7d3c2 56%, #f5f5f7 66%, #f5f5f7 100%);
@@ -191,6 +206,14 @@
 
   .scroll-stem::after {
     animation: oo-stem 1.6s ease-in-out infinite;
+  }
+
+  .caret {
+    animation: oo-blink 1.05s steps(1) infinite;
+  }
+
+  .sheet-scan {
+    animation: oo-scan 2.8s ease-in-out infinite;
   }
 }
 
@@ -245,6 +268,15 @@
 @keyframes oo-stem {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(3rem); }
+}
+
+@keyframes oo-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes oo-scan {
+  from { transform: translateX(0); }
+  to { transform: translateX(320%); }
 }
 
 

@@ -97,42 +97,33 @@ function Score({
   );
 }
 
-const SCENES = [
+const BEATS = [
   {
-    kicker: "Termination",
-    line: "The way out.",
-    q: "Can the customer terminate for convenience after year one?",
-    a: "Yes. After the initial term, either party may terminate for convenience on thirty days’ notice.",
-    cite: "§8.2 · page 11",
-    before: "This Agreement begins on the Effective Date and continues for an initial term of one year.",
-    hit: "After the Initial Term, either party may terminate this Agreement for convenience upon thirty (30) days’ prior written notice.",
-    after: "Fees remain due only for work performed through the termination date.",
+    kicker: "01  Ask",
+    word: "Ask.",
+    line: "In plain English.",
+    body: "A lawyer types the question the way they would ask an associate. No query language. No folder to remember.",
+    kind: "ask",
   },
   {
-    kicker: "Work product",
-    line: "Who keeps the work.",
-    q: "Who owns work product created during the engagement?",
-    a: "The client does. On payment, the firm assigns the work product, and keeps its preexisting tools.",
-    cite: "§11.4 · page 16",
-    before: "Each party retains its preexisting materials and tools.",
-    hit: "Upon payment in full, Consultant assigns to Client all right, title, and interest in the work product created under this Agreement.",
-    after: "Consultant keeps a license to reuse general know-how that contains no client confidential information.",
+    kicker: "02  The file",
+    word: "The file.",
+    line: "Not the open web.",
+    body: "It searches that firm’s contracts and case files. If the answer is not in the file, it does not borrow one from somewhere else.",
+    kind: "file",
   },
   {
-    kicker: "Liability",
-    line: "Where the risk stops.",
-    q: "Is liability capped, and at what amount?",
-    a: "Yes. Liability is capped at the fees paid in the twelve months before the claim.",
-    cite: "§14.1 · page 19",
-    before: "Neither party is liable for indirect, incidental, or consequential damages.",
-    hit: "Each party’s total liability will not exceed the fees paid under this Agreement in the twelve (12) months before the claim.",
-    after: "The cap does not apply to a confidentiality breach or to fraud.",
+    kicker: "03  The page",
+    word: "The page.",
+    line: "The answer does not arrive alone.",
+    body: "It comes back with the document and the lines it used. Cited, or it doesn’t count.",
+    kind: "page",
   },
 ] as const;
 
-type Scene = (typeof SCENES)[number];
+type Beat = (typeof BEATS)[number];
 
-const TICKER = ["Termination", "Work product", "Liability", "The page comes with it"];
+const TICKER = ["Ask", "The file", "The page", "Cited, or it doesn’t count"];
 
 function useScrub(ref: RefObject<HTMLElement | null>) {
   const [p, setP] = useState(0);
@@ -164,27 +155,55 @@ function useScrub(ref: RefObject<HTMLElement | null>) {
   return p;
 }
 
-function Frame({ item }: { item: Scene }) {
-  return (
-    <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-      <div>
-        <p className="text-xs tracking-[0.2em] text-glow uppercase">{item.kicker}</p>
-        <h2 className="mt-3 text-4xl leading-[0.95] font-semibold tracking-[-0.04em] md:text-6xl">{item.line}</h2>
-        <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">{item.q}</p>
+function Stage({ kind }: { kind: Beat["kind"] }) {
+  if (kind === "ask") {
+    return (
+      <div className="glass mt-10 flex max-w-xl items-center gap-3 rounded-full px-5 py-4">
+        <span className="size-1.5 shrink-0 rounded-full bg-glow" />
+        <span className="text-lg">What does our file say?</span>
+        <span className="caret ml-1" />
       </div>
-      <figure className="glass rounded-[1.5rem] p-5 text-left md:p-6">
-        <figcaption className="flex items-center justify-between text-[11px] tracking-wide text-muted uppercase">
-          <span>MSA-04</span>
-          <span>{item.cite}</span>
-        </figcaption>
-        <div className="mt-5 space-y-3 text-sm leading-relaxed">
-          <p className="text-ink/40">{item.before}</p>
-          <p className="cite-hit rounded-r-lg py-2 pr-2 pl-3 text-ink">{item.hit}</p>
-          <p className="text-ink/40">{item.after}</p>
+    );
+  }
+  if (kind === "file") {
+    return (
+      <div className="mt-10 grid max-w-xl grid-cols-2 gap-3">
+        <div className="flex items-end rounded-2xl border border-line p-5 text-muted">
+          <p>
+            <span className="line-through decoration-white/30">The open web</span>
+            <span className="mt-2 block text-sm no-underline">Stays out.</span>
+          </p>
         </div>
-        <p className="mt-5 border-t border-line pt-4 text-base leading-relaxed">{item.a}</p>
-        <p className="mt-3 text-[11px] text-muted">Sample. Not a client file.</p>
-      </figure>
+        <div className="glass relative overflow-hidden rounded-2xl p-5">
+          <div className="sheet-scan" aria-hidden />
+          <p className="relative">Your files</p>
+          <p className="relative mt-2 text-sm text-muted">Contracts and case files.</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="mt-10 grid max-w-xl grid-cols-[1fr_auto] gap-3">
+      <div className="glass rounded-2xl p-5">
+        <p className="text-xs tracking-wide text-muted uppercase">The answer</p>
+        <p className="mt-3 text-lg leading-snug">In the file. With the lines it used.</p>
+      </div>
+      <div className="cite-hit flex w-24 flex-col justify-center rounded-2xl px-4">
+        <p className="text-[11px] tracking-wide text-glow uppercase">Page</p>
+        <p className="text-4xl font-semibold tracking-tight">11</p>
+      </div>
+    </div>
+  );
+}
+
+function BeatView({ beat }: { beat: Beat }) {
+  return (
+    <div>
+      <p className="text-xs tracking-[0.22em] text-glow uppercase">{beat.kicker}</p>
+      <h2 className="mt-4 text-6xl leading-[0.9] font-semibold tracking-[-0.05em] md:text-8xl">{beat.word}</h2>
+      <p className="mt-5 text-xl md:text-2xl">{beat.line}</p>
+      <p className="mt-3 max-w-xl text-base leading-relaxed text-muted md:text-lg">{beat.body}</p>
+      <Stage kind={beat.kind} />
     </div>
   );
 }
@@ -192,63 +211,52 @@ function Frame({ item }: { item: Scene }) {
 function ScrollShow() {
   const ref = useRef<HTMLElement>(null);
   const p = useScrub(ref);
-  const scaled = Math.min(SCENES.length - 1, p * (SCENES.length - 1));
-  const index = Math.round(scaled);
+  const scaled = Math.min(0.999, p) * BEATS.length;
+  const index = Math.floor(scaled);
+  const beat = BEATS[index];
 
   const jump = (i: number) => {
     const el = ref.current;
     if (!el) return;
     const total = el.offsetHeight - window.innerHeight;
-    const top = el.getBoundingClientRect().top + window.scrollY + (i / (SCENES.length - 1)) * total;
+    const top = el.getBoundingClientRect().top + window.scrollY + (i / BEATS.length) * total + 8;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
     <>
-      <section className="md:hidden" aria-label="Termination, work product, and liability">
-        {SCENES.map((item) => (
-          <article key={item.kicker} className="snap-scene flex min-h-[100svh] items-center px-5 py-16">
-            <Frame item={item} />
+      <section className="md:hidden" aria-label="Ask, the file, the page">
+        {BEATS.map((item) => (
+          <article key={item.word} className="snap-scene flex min-h-[100svh] items-center px-5 py-20">
+            <BeatView beat={item} />
           </article>
         ))}
       </section>
 
-      <section ref={ref} className="relative hidden h-[220vh] md:block" aria-label="Termination, work product, and liability">
-        <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
-          <div className="mx-auto w-full max-w-6xl px-8">
-            <div className="mb-8 flex items-center gap-6">
-              <div className="flex gap-2">
-                {SCENES.map((s, i) => (
-                  <button
-                    key={s.kicker}
-                    type="button"
-                    onClick={() => jump(i)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                      i === index ? "border-ink/30 bg-ink text-canvas" : "border-line text-muted hover:text-ink"
-                    }`}
-                  >
-                    {s.kicker}
-                  </button>
-                ))}
-              </div>
+      <section ref={ref} className="relative hidden h-[240vh] md:block" aria-label="Ask, the file, the page">
+        <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center overflow-hidden">
+          <div className="aurora" aria-hidden>
+            <div className="aurora-a -top-24 left-1/3" />
+            <div className="aurora-b top-1/3 right-0" />
+          </div>
+          <div className="relative mx-auto w-full max-w-6xl px-10">
+            <div className="mb-10 flex items-center gap-6">
+              {BEATS.map((item, i) => (
+                <button
+                  key={item.word}
+                  type="button"
+                  onClick={() => jump(i)}
+                  className={`text-sm transition-colors ${i === index ? "text-ink" : "text-muted hover:text-ink"}`}
+                >
+                  {item.word}
+                </button>
+              ))}
               <div className="h-px flex-1 bg-line">
                 <div className="h-px origin-left bg-ink" style={{ transform: `scaleX(${p})` }} />
               </div>
             </div>
-            <div className="grid">
-              {SCENES.map((item, i) => {
-                const opacity = Math.max(0, 1 - Math.abs(scaled - i) * 1.35);
-                return (
-                  <div
-                    key={item.kicker}
-                    className="col-start-1 row-start-1"
-                    style={{ opacity, visibility: opacity < 0.05 ? "hidden" : "visible" }}
-                    aria-hidden={i !== index}
-                  >
-                    <Frame item={item} />
-                  </div>
-                );
-              })}
+            <div key={beat.word} className="answer-in">
+              <BeatView beat={beat} />
             </div>
           </div>
         </div>
