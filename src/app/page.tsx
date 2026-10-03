@@ -5,6 +5,22 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 const CALENDLY = "https://calendly.com/francisco-r-outboundos/30min";
 const LINKEDIN = "https://www.linkedin.com/in/franciscoroncalli/";
 
+function Mark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <path
+        d="M44 16H24a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M38 32h16" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function BookButton({ className = "" }: { className?: string }) {
   return (
     <a
@@ -168,7 +184,10 @@ export default function Home() {
 
       <header className="sticky top-0 z-30 border-b border-line bg-canvas/55 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-          <p className="text-sm font-semibold tracking-tight">OutboundOS</p>
+          <a href="/" className="flex items-center gap-2.5 text-ink">
+            <Mark className="size-7" />
+            <span className="text-sm font-semibold tracking-tight">OutboundOS</span>
+          </a>
           <BookButton className="hidden min-h-10 px-5 md:inline-flex" />
         </div>
       </header>
@@ -233,7 +252,7 @@ export default function Home() {
           <ol className="mt-10 grid gap-4 md:grid-cols-3">
             {[
               ["01", "The lawyer asks in plain English."],
-              ["02", "The assistant searches that firm\u2019s contracts and case files, not the open web."],
+              ["02", "The assistant searches that firm’s contracts and case files, not the open web."],
               ["03", "The answer comes back with the document and the passage it used."],
             ].map(([n, text]) => (
               <li key={n} className="rise glass rounded-3xl p-6">

@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "OutboundOS — The citation comes with the answer",
   description:
     "A citation-backed document assistant for mid-market law firms. On a real deployment, a client benchmark went from 5 of 14 correct to 14 of 14. A $200 accuracy audit is credited toward the build.",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/favicon.svg" }],
+  },
 };
 
 export const viewport: Viewport = {
