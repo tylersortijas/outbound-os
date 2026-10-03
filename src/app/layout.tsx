@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, Newsreader } from "next/font/google";
 import "./globals.css";
 
@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "OutboundOS — The citation comes with the answer",
   description:
     "A citation-backed document assistant for mid-market law firms. On a real deployment, a client benchmark went from 5 of 14 correct to 14 of 14. A $200 accuracy audit is credited toward the build.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050506",
 };
 
 export default function RootLayout({
