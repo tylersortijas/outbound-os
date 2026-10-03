@@ -121,6 +121,17 @@
   animation-range: entry 0% entry 35%;
 }
 
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+}
+
+.cite-hit {
+  background: linear-gradient(90deg, rgba(231, 211, 194, 0.2), transparent 90%);
+  box-shadow: inset 2px 0 0 #e7d3c2;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .display {
     background-image: linear-gradient(105deg, #f5f5f7 0%, #f5f5f7 40%, #ffffff 50%, #e7d3c2 56%, #f5f5f7 66%, #f5f5f7 100%);
@@ -145,6 +156,18 @@
 
   .float {
     animation: oo-float 7s ease-in-out infinite;
+  }
+
+  .marquee-track {
+    animation: oo-marquee 36s linear infinite;
+  }
+
+  .answer-in {
+    animation: oo-answer 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .hit-in {
+    animation: oo-hit 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 }
 
@@ -180,6 +203,20 @@
 @keyframes oo-rise {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
+}
+
+@keyframes oo-marquee {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes oo-answer {
+  from { opacity: 0; transform: translateY(12px); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes oo-hit {
+  from { opacity: 0.2; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
