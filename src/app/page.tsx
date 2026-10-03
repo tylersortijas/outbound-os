@@ -100,6 +100,7 @@ function Score({
 const SCENES = [
   {
     kicker: "Termination",
+    line: "The way out.",
     q: "Can the customer terminate for convenience after year one?",
     a: "Yes. After the initial term, either party may terminate for convenience on thirty days’ notice.",
     cite: "§8.2 · page 11",
@@ -109,6 +110,7 @@ const SCENES = [
   },
   {
     kicker: "Work product",
+    line: "Who keeps the work.",
     q: "Who owns work product created during the engagement?",
     a: "The client does. On payment, the firm assigns the work product, and keeps its preexisting tools.",
     cite: "§11.4 · page 16",
@@ -118,6 +120,7 @@ const SCENES = [
   },
   {
     kicker: "Liability",
+    line: "Where the risk stops.",
     q: "Is liability capped, and at what amount?",
     a: "Yes. Liability is capped at the fees paid in the twelve months before the claim.",
     cite: "§14.1 · page 19",
@@ -127,32 +130,9 @@ const SCENES = [
   },
 ] as const;
 
-const CHAPTERS = [
-  {
-    n: "01",
-    title: "Ask in plain English.",
-    body: "A lawyer types the question the way they would ask an associate. No query language. No folder path.",
-  },
-  {
-    n: "02",
-    title: "Your files. Not the web.",
-    body: "The assistant searches that firm’s contracts and case files. If it is not in the file, it does not answer from the open web.",
-  },
-  {
-    n: "03",
-    title: "The passage comes back.",
-    body: "The answer arrives with the document, the section, and the lines it used. Cited, or it doesn’t count.",
-  },
-] as const;
+type Scene = (typeof SCENES)[number];
 
-const TICKER = [
-  "Cited, or it doesn’t count",
-  "Plain English in",
-  "Page number out",
-  "Your files, not the web",
-  "Accuracy you can audit",
-  "A real deployment, not a demo",
-];
+const TICKER = ["Termination", "Work product", "Liability", "The page comes with it"];
 
 function useScrub(ref: RefObject<HTMLElement | null>) {
   const [p, setP] = useState(0);
@@ -164,7 +144,8 @@ function useScrub(ref: RefObject<HTMLElement | null>) {
     const measure = () => {
       const total = el.offsetHeight - window.innerHeight;
       const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), Math.max(total, 0));
-      setP(total > 0 ? scrolled / total : 0);
+      const next = total > 0 ? scrolled / total : 0;
+      setP((prev) => (Math.abs(prev - next) < 0.008 ? prev : next));
     };
     const onScroll = () => {
       cancelAnimationFrame(raf);
@@ -183,110 +164,96 @@ function useScrub(ref: RefObject<HTMLElement | null>) {
   return p;
 }
 
+function Frame({ item }: { item: Scene }) {
+  return (
+    <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+      <div>
+        <p className="text-xs tracking-[0.2em] text-glow uppercase">{item.kicker}</p>
+        <h2 className="mt-3 text-4xl leading-[0.95] font-semibold tracking-[-0.04em] md:text-6xl">{item.line}</h2>
+        <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">{item.q}</p>
+      </div>
+      <figure className="glass rounded-[1.5rem] p-5 text-left md:p-6">
+        <figcaption className="flex items-center justify-between text-[11px] tracking-wide text-muted uppercase">
+          <span>MSA-04</span>
+          <span>{item.cite}</span>
+        </figcaption>
+        <div className="mt-5 space-y-3 text-sm leading-relaxed">
+          <p className="text-ink/40">{item.before}</p>
+          <p className="cite-hit rounded-r-lg py-2 pr-2 pl-3 text-ink">{item.hit}</p>
+          <p className="text-ink/40">{item.after}</p>
+        </div>
+        <p className="mt-5 border-t border-line pt-4 text-base leading-relaxed">{item.a}</p>
+        <p className="mt-3 text-[11px] text-muted">Sample. Not a client file.</p>
+      </figure>
+    </div>
+  );
+}
+
 function ScrollShow() {
   const ref = useRef<HTMLElement>(null);
   const p = useScrub(ref);
-  const scaled = Math.min(0.999, p) * SCENES.length;
-  const index = Math.min(SCENES.length - 1, Math.floor(scaled));
-  const local = scaled - index;
-  const item = SCENES[index];
-  const answer = Math.min(1, Math.max(0, (local - 0.32) / 0.38));
+  const scaled = Math.min(SCENES.length - 1, p * (SCENES.length - 1));
+  const index = Math.round(scaled);
 
   const jump = (i: number) => {
     const el = ref.current;
     if (!el) return;
     const total = el.offsetHeight - window.innerHeight;
-    const top = el.getBoundingClientRect().top + window.scrollY + (i / SCENES.length) * total + 4;
+    const top = el.getBoundingClientRect().top + window.scrollY + (i / (SCENES.length - 1)) * total;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
-    <section ref={ref} className="relative h-[260vh] md:h-[340vh]" aria-label="A citation, scrolled">
-      <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
-        <div className="mx-auto w-full max-w-3xl px-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div className="flex gap-2 overflow-x-auto">
-              {SCENES.map((s, i) => (
-                <button
-                  key={s.kicker}
-                  type="button"
-                  onClick={() => jump(i)}
-                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition-colors ${
-                    i === index ? "border-ink/30 bg-ink text-canvas" : "border-line text-muted hover:text-ink"
-                  }`}
-                >
-                  {s.kicker}
-                </button>
-              ))}
-            </div>
-            <p className="hidden text-xs text-muted tabular-nums sm:block">{String(index + 1).padStart(2, "0")} / 03</p>
-          </div>
-          <div className="mb-4 h-px bg-line">
-            <div className="h-px origin-left bg-ink" style={{ transform: `scaleX(${p})` }} />
-          </div>
-          <figure className="glass relative overflow-hidden rounded-[1.75rem] p-6 text-left md:p-8">
-            <div className="halo absolute -inset-24 -z-10" aria-hidden />
-            <figcaption className="text-xs text-muted">Sample. Not a client file. Scroll to read it.</figcaption>
-            <p className="mt-6 font-serif text-2xl leading-snug md:text-3xl">{item.q}</p>
-            <div className="mt-6 space-y-3 text-sm leading-relaxed text-ink/55">
-              <p style={{ opacity: 0.35 + local * 0.4 }}>{item.before}</p>
-              <p
-                className="cite-hit rounded-r-xl py-2 pr-3 pl-3 text-ink"
-                style={{ clipPath: `inset(0 ${(1 - Math.min(1, local / 0.55)) * 100}% 0 0)` }}
-              >
-                {item.hit}
-              </p>
-              <p style={{ opacity: Math.min(1, Math.max(0, (local - 0.45) / 0.35)) }}>{item.after}</p>
-            </div>
-            <div
-              className="mt-6 border-t border-line pt-5"
-              style={{ opacity: answer, transform: `translateY(${(1 - answer) * 14}px)` }}
-            >
-              <p className="text-lg leading-relaxed">{item.a}</p>
-              <p className="mt-2 text-xs text-glow">Master services agreement · {item.cite}</p>
-            </div>
-          </figure>
-        </div>
-      </div>
-    </section>
-  );
-}
+    <>
+      <section className="md:hidden" aria-label="Termination, work product, and liability">
+        {SCENES.map((item) => (
+          <article key={item.kicker} className="snap-scene flex min-h-[100svh] items-center px-5 py-16">
+            <Frame item={item} />
+          </article>
+        ))}
+      </section>
 
-function Chapters() {
-  const ref = useRef<HTMLElement>(null);
-  const p = useScrub(ref);
-  const scaled = Math.min(0.999, p) * CHAPTERS.length;
-  const step = Math.min(CHAPTERS.length - 1, Math.floor(scaled));
-  const chapter = CHAPTERS[step];
-
-  return (
-    <section ref={ref} className="relative h-[220vh] md:h-[300vh]" aria-labelledby="how-heading">
-      <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-8 px-5 md:gap-16">
-          <div className="relative h-48 w-px bg-line md:h-64" aria-hidden>
-            <div className="absolute inset-x-0 top-0 w-px bg-ink" style={{ height: `${p * 100}%` }} />
-          </div>
-          <div>
-            <p className="text-sm text-glow tabular-nums">{chapter.n} / 03</p>
-            <h2
-              id="how-heading"
-              className="mt-4 max-w-3xl text-4xl leading-[0.95] font-semibold tracking-[-0.045em] md:text-6xl"
-              style={{ transform: `translateY(${(1 - (scaled - step)) * 18}px)` }}
-            >
-              {chapter.title}
-            </h2>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{chapter.body}</p>
-            <ol className="sr-only">
-              {CHAPTERS.map((c) => (
-                <li key={c.n}>
-                  {c.title} {c.body}
-                </li>
-              ))}
-            </ol>
+      <section ref={ref} className="relative hidden h-[220vh] md:block" aria-label="Termination, work product, and liability">
+        <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center">
+          <div className="mx-auto w-full max-w-6xl px-8">
+            <div className="mb-8 flex items-center gap-6">
+              <div className="flex gap-2">
+                {SCENES.map((s, i) => (
+                  <button
+                    key={s.kicker}
+                    type="button"
+                    onClick={() => jump(i)}
+                    className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                      i === index ? "border-ink/30 bg-ink text-canvas" : "border-line text-muted hover:text-ink"
+                    }`}
+                  >
+                    {s.kicker}
+                  </button>
+                ))}
+              </div>
+              <div className="h-px flex-1 bg-line">
+                <div className="h-px origin-left bg-ink" style={{ transform: `scaleX(${p})` }} />
+              </div>
+            </div>
+            <div className="grid">
+              {SCENES.map((item, i) => {
+                const opacity = Math.max(0, 1 - Math.abs(scaled - i) * 1.35);
+                return (
+                  <div
+                    key={item.kicker}
+                    className="col-start-1 row-start-1"
+                    style={{ opacity, visibility: opacity < 0.05 ? "hidden" : "visible" }}
+                    aria-hidden={i !== index}
+                  >
+                    <Frame item={item} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -300,13 +267,6 @@ export default function Home() {
       if (el) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
         el.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
-      }
-      const heroEl = hero.current;
-      const copy = heroEl?.querySelector<HTMLElement>("[data-hero-copy]");
-      if (heroEl && copy) {
-        const passed = Math.min(1, Math.max(0, -heroEl.getBoundingClientRect().top / (heroEl.offsetHeight * 0.65)));
-        copy.style.transform = `translateY(${passed * 48}px)`;
-        copy.style.opacity = String(1 - passed * 0.9);
       }
     };
     onScroll();
@@ -323,7 +283,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-canvas text-ink">
+    <div className="min-h-screen bg-canvas text-ink">
       <div className="grain" aria-hidden />
       <div
         ref={bar}
@@ -410,8 +370,6 @@ export default function Home() {
             </p>
           </div>
         </section>
-
-        <Chapters />
 
         <section className="mt-16 border-t border-line" aria-labelledby="who-heading">
           <div className="mx-auto grid max-w-6xl md:grid-cols-2">

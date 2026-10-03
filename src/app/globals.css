@@ -247,6 +247,18 @@
   100% { transform: translateY(3rem); }
 }
 
+
+@media (max-width: 767px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+
+  .snap-scene {
+    scroll-snap-align: start;
+    scroll-margin-top: 3.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
